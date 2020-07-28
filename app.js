@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const grid = document.querySelector(".grid")
     let width = 10
     let bombAmount = 20
+    let flags = 0
     let squares = []
     let isGameOver = false
 
@@ -27,6 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
             square.addEventListener("click", e => {
                 click(square)
             })
+
+            // ctrl and left click
+            square.oncontextmenu = function(e) {
+                e.preventDefault()
+                addFlag(square)
+            }
         }
 
 
@@ -37,22 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const isRightEdge = (i % width === width - 1)
 
             if (squares[i].classList.contains("valid")) {
-                if (i > 0 && !isLeftEdge && squares[i - 1].classList.contains("bomb")) total++
-                // squares to the southwest
-                if (i > 9 && !isRightEdge && squares[i + 1].classList.contains("bomb")) total++
-                // square to the north
-                if (i > 10 && squares[i - width].classList.contains("bomb")) total++
-                // square to the northwest
-                if (i > 11 && isLeftEdge && squares[i - 1 - width].classList.contains("bomb")) total++
-                // square to the east
-                if (i < 98 && !isRightEdge && squares[i + 1].classList.contains("bomb")) total++
-                // square to the southwest
-                if (i < 90 && !isLeftEdge && squares[i - 1 + width].classList.contains("bomb")) total++
-                // square to the southeast
-                if (i < 88 && !isRightEdge && squares[i + 1 + width].classList.contains("bomb")) total++
-                // square to the south
-                if (i < 89 && squares[i + width].classList.contains("bomb")) total++
-                squares[i].setAttribute("data", total)
+                if (i > 0 && !isLeftEdge && squares[i -1].classList.contains('bomb')) total ++
+                if (i > 9 && !isRightEdge && squares[i +1 -width].classList.contains('bomb')) total ++
+                if (i > 10 && squares[i -width].classList.contains('bomb')) total ++
+                if (i > 11 && !isLeftEdge && squares[i -1 -width].classList.contains('bomb')) total ++
+                if (i < 98 && !isRightEdge && squares[i +1].classList.contains('bomb')) total ++
+                if (i < 90 && !isLeftEdge && squares[i -1 +width].classList.contains('bomb')) total ++
+                if (i < 88 && !isRightEdge && squares[i +1 +width].classList.contains('bomb')) total ++
+                if (i < 89 && squares[i +width].classList.contains('bomb')) total ++
+                squares[i].setAttribute('data', total)
 
 
             }
@@ -62,6 +62,21 @@ document.addEventListener("DOMContentLoaded", () => {
     createBoard()
 
 
+    addFlag = (square) => {
+        if(isGameOver) return
+        if(!square.classList.contains("checked") && (flags < bombAmount)) {
+            if (!square.classList.contains("flag")) {
+                square.classList.add("flag")
+                square.innerHTML = "🚩"
+                flags++
+            } else {
+                square.classList.remove("flag")
+                square.innerHTML = ""
+                flags--
+            }
+        }
+    }
+
 
     // click on square actions
     click = (square) => {
@@ -70,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (square.classList.contains("checked") || square.classList.contains("flag")) return
 
         if (square.classList.contains("bomb")) {
-            console.log("Game over")
+            gameOver(square)
         } else {
             let total = square.getAttribute("data")
             if (total != 0) {
@@ -135,6 +150,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 10);
     }
 
+    // game over
+    gameOver = (square) => {
+        console.log("BOOM!")
+        isGameOver = true
 
+        // show all the bomb
+        squares.forEach((square) => {
+            if (square.classList.contains("bomb")) {
+                square.innerHTML = "💣"
+            }
+        })
+
+    }
 
 })
