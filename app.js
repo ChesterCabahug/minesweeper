@@ -20,6 +20,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             grid.appendChild(square)
             squares.push(square)
+
+
+            // normal click
+            square.addEventListener("click" , e => {
+                click(square)
+            })
         }
     
     
@@ -54,5 +60,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     createBoard()
 
+
+
+    // click on square actions
+    click = (square) => {
+        if(square.classList.contains("bomb")) {
+            alert("Game over")
+        }
+    }
+
+
+
 })
+
 
