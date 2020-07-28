@@ -73,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 square.innerHTML = total
                 return
             }
+            square.classList.add("checked")
         }
     }
 
