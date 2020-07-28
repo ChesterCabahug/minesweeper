@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let width = 10
     let bombAmount = 20
     let squares = []
+    let isGameOver = false
 
     // create board
     createBoard = () => {
@@ -64,6 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // click on square actions
     click = (square) => {
+        if (isGameOver) return
+        if (square.classList.contains("checked") || square.classList.contains("flag")) return
+
         if(square.classList.contains("bomb")) {
             console.log("Game over")
         } else {
